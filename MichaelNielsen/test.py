@@ -140,7 +140,38 @@ class Network(object):
             nabla_w[-l] = np.dot(delta, activations[-l-1].transpose())
         return (nabla_b, nabla_w)
     
-    ## 如果由测试数据，进行评估
+    ## ----------
+    ## 批量处理一个小块内的向量，其中的每一个样本存储在列表xs,ys中
+    ## 返回偏置和权重的梯度列表
+
+    def backprop_s(self, xs, ys, mini_batch_size): ## xs,ys存储每一个样本的输入和输出真值
+        
+        ## 初始化偏置和权重的梯度列表,输入值和加权和列表，每一项代表一个样本
+        nabla_b = []
+        nabla_w = []
+        activations = []
+        zs = []
+
+        ## 前馈运算，遍历小块中的每一个样本
+        for i in range(0,mini_batch_size):
+            nabla_b[i] = [np.zero(b.shape) for b in self.biases]
+            nabla_w[i] = [np.zero(w.shape) for w in self.weight]
+
+            activation = xs[i] ##获取第i个样本的输入值, activation记录当前运算层的激活值
+            activations[i] = [xs[i]] ##第i个样本的activations列表的第一位存储输入值
+
+            for b,w in zip(self.biases, self.weights):
+                z = np.dot(w, activation) + b
+                zs[i].append(z) ##针对第i个样本，加权和列表的i位，纳入当前计算层的加权和
+                activation = sigmoid(z)
+                activations[1].append(activation)
+        
+        ## 反向传播
+
+                
+    ## 新的损失函数对输出层激活值的偏导
+    def new_cost_derivative(self, output_activations, ys):
+        return (output_activations - ys)
 
 
 
